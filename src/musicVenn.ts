@@ -1,6 +1,6 @@
 import { spotifyDataPromise, lastfmDataPromise } from "./script";
-import { getCurentPersonal, getCurentCountry, getCurentWorld, updateCountryData } from "./main";
-import { ChartData, Chart, elements, registerables, TooltipItem } from "chart.js";
+import { getCurentPersonal, getCurentCountry, getCurentWorld } from "./main";
+import { ChartData, Chart, registerables, TooltipItem } from "chart.js";
 import { VennDiagramChart, extractSets, VennDiagramController, ArcSlice } from "chartjs-chart-venn";
 import { countryDataPromise } from "./main";
 
