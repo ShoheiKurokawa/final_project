@@ -1,5 +1,6 @@
 import { spotifyDataPromise, myArtists, myTracks, lastfmDataPromise, worldArtists, worldTracks} from "./script.ts";
 import { getTopArtistsByCountry, getTopTracksByCountry } from "./lastfm.ts";
+import { reset, createOrUpdateChart } from "./musicVenn";
 
 const typeSelect = document.getElementById("type") as HTMLSelectElement;
 const countrySelect = document.getElementById("country") as HTMLSelectElement;
@@ -159,13 +160,14 @@ countrySelect.addEventListener("change", async () => {
   const selectedCountry = countrySelect.value;
   try {
     await updateCountryData(selectedCountry, 20, 2);
-
+    await countryDataPromise
     setTypeTitle(typeSelect.value, selectedCountry);
     if (typeSelect.value === "Artists") {
       setCountryList(currentCountryArtists);
     } else {
       setCountryList(currentCountryTracks);
     }
+    createOrUpdateChart();
   } catch (error) {
     console.error("Error fetching country data:", error);
   }
@@ -228,3 +230,16 @@ export function getCurentWorld(){
   }
   return makeWorld;
 }
+
+document.getElementById("reset")?.addEventListener("click", async() => {
+  typeSelect.value = "Artists";
+  countrySelect.value = "United States";
+  numberSelect.value = "5";
+  updateCountryData("United States", 20, 2);
+  await getCurentCountry();
+  setTypeTitle(typeSelect.value, countrySelect.value);
+  setArtistList(myArtists);
+  setWorldArtists(worldArtists);
+  setCountryList(currentCountryArtists);
+  reset();
+});

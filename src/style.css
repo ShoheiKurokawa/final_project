@@ -51,4 +51,15 @@ h1 {
 .container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+#selectForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px; 
+  align-items: center;
+  margin-bottom: 20px;
 }
