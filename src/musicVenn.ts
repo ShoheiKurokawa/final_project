@@ -12,7 +12,6 @@ let labels = ["Personal", "Country", "World"];
 const tooltipConfig = {
     enabled: true,
     external: (context: { tooltip: any }) => {
-        // Force the tooltip to update
         const tooltip = context.tooltip;
         if (tooltip.opacity === 0) return;
 
@@ -25,31 +24,35 @@ const tooltipConfig = {
             const rawData = tooltipItem.raw as VennRawData;
             const sets = rawData.sets;
             const customLabel = sets.join(" ∩ ");
-    
-            // **Directly fetch fresh data from the chart instance**
+
+            // **Fetch the latest dataset values dynamically**
             const chartData = tooltipItem.chart.data as ChartData<'venn', number[], string>;
-    
-            // **Ensure we are rebuilding the latest data mapping dynamically**
+
+            // **Ensure mapping of set labels to their corresponding values**
             const setMapping: Record<string, string[]> = {};
-    
+
+            // Iterate over the dataset and correctly map values to sets
             (chartData.datasets[0].data as any[]).forEach((entry) => {
-                if (entry.sets.length === 1) {
-                    setMapping[entry.sets[0]] = entry.values;
-                }
+                entry.sets.forEach((set: string) => {
+                    if (!setMapping[set]) {
+                        setMapping[set] = [...entry.values]; // Accumulate values instead of overwriting
+                    } else {
+                        setMapping[set] = [...setMapping[set], ...entry.values];
+                    }
+                });
             });
-    
-            // dynamically filter the items based on the sets
+
             let items: string[] = [];
             if (sets.length === 1) {
                 items = setMapping[sets[0]] || [];
             } else {
-                items = setMapping[sets[0]] || [];
-                for (let i = 1; i < sets.length; i++) {
-                    const currentSet = setMapping[sets[i]] || [];
-                    items = items.filter(item => currentSet.includes(item));
-                }
+                // **Find the correct intersection**
+                items = sets.reduce((acc, set, index) => {
+                    if (index === 0) return setMapping[set] || [];
+                    return acc.filter(item => (setMapping[set] || []).includes(item));
+                }, [] as string[]);
             }
-    
+
             return `${customLabel}: ${items.length ? items.join(', ') : '(none)'}`;
         }
     }
@@ -212,6 +215,13 @@ canvas.addEventListener('mouseup', async (e) => {
   }
 });
 
+document.addEventListener("mouseup", async (e) => {
+    if (selectionRect) {
+        selectionRect.remove();
+        selectionRect = null;
+    }
+});
+
 
 
 // Function to filter the Venn data based on the selection rectangle
@@ -299,7 +309,7 @@ Promise.all([spotifyDataPromise, lastfmDataPromise])
   });
 
 export function reset(){
-    // Reset the chart to its original state
+    console.log(selectionRect);
     labels = labelOrigin;
     createOrUpdateChart();
 }

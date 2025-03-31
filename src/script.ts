@@ -1,5 +1,5 @@
 // Import functions from Last.fm module
-import { getTopArtistsChart, getTopTracksChart} from "./lastfm.ts";
+import { getTopArtistsChart, getTopTracksChart} from "./lastfm";
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // Replace with your client id
 const params = new URLSearchParams(window.location.search);
 const code = params.get("code");

@@ -1,5 +1,5 @@
-import { spotifyDataPromise, myArtists, myTracks, lastfmDataPromise, worldArtists, worldTracks} from "./script.ts";
-import { getTopArtistsByCountry, getTopTracksByCountry } from "./lastfm.ts";
+import { spotifyDataPromise, myArtists, myTracks, lastfmDataPromise, worldArtists, worldTracks} from "./script";
+import { getTopArtistsByCountry, getTopTracksByCountry } from "./lastfm";
 import { reset, createOrUpdateChart } from "./musicVenn";
 
 const typeSelect = document.getElementById("type") as HTMLSelectElement;
